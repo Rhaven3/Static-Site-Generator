@@ -114,5 +114,24 @@ class TestUtils(unittest.TestCase):
         ]
         self.assertEqual(result, expected)
 
+    def test_text_to_textnodes(self):
+        text = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        text_nodes = inline_markdown.text_to_textnodes(text)
+        
+        expected_nodes = [
+            inline_markdown.TextNode("This is ", inline_markdown.TextType.TEXT),
+            inline_markdown.TextNode("text", inline_markdown.TextType.BOLD),
+            inline_markdown.TextNode(" with an ", inline_markdown.TextType.TEXT),
+            inline_markdown.TextNode("italic", inline_markdown.TextType.ITALIC),
+            inline_markdown.TextNode(" word and a ", inline_markdown.TextType.TEXT),
+            inline_markdown.TextNode("code block", inline_markdown.TextType.CODE),
+            inline_markdown.TextNode(" and an ", inline_markdown.TextType.TEXT),
+            inline_markdown.TextNode("obi wan image", inline_markdown.TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+            inline_markdown.TextNode(" and a ", inline_markdown.TextType.TEXT),
+            inline_markdown.TextNode("link", inline_markdown.TextType.LINK, "https://boot.dev"),
+        ]
+        
+        self.assertEqual(text_nodes, expected_nodes)
+
 if __name__ == "__main__":
     unittest.main()

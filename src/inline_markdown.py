@@ -1,5 +1,24 @@
 import re
-from textnode import TextType, TextNode
+from textnode import TextType, TextNode, TextDelimiter
+
+
+def text_to_textnodes(text):
+    old_node = [TextNode(text, TextType.TEXT)]
+    new_nodes = []
+    
+    delimiters = []
+
+    for delim in TextDelimiter:
+        delimiters.extend(delim.value)
+
+    for delimiter in delimiters:
+        new_nodes = split_nodes_delimiter(old_node, delimiter, TextType.TEXT)
+        old_node = new_nodes
+        
+    new_nodes = split_nodes_image(old_node)
+    old_node = new_nodes
+    new_nodes = split_nodes_link(old_node)
+    return new_nodes
 
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes = []
@@ -17,17 +36,10 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
                 new_nodes.append(type(node)(part, TextType.TEXT, node.url))
                 continue
 
-            match delimiter:
-                case "**":
-                    new_nodes.append(type(node)(part, TextType.BOLD, node.url))
-                case "*":
-                    new_nodes.append(type(node)(part, TextType.ITALIC, node.url))
-                case "```":
-                    new_nodes.append(type(node)(part, TextType.CODE, node.url))
-                case "``":
-                    new_nodes.append(type(node)(part, TextType.CODE, node.url))
-                case _:
-                    raise Exception(f"Unsupported delimiter: {delimiter}, invalid markdown syntax")
+            for textDelimiter in TextDelimiter:
+                if delimiter in textDelimiter.value:
+                    name = textDelimiter.name
+                    new_nodes.append(type(node)(part, TextType[name], node.url))
     return new_nodes
 
 def split_nodes_image(old_nodes):

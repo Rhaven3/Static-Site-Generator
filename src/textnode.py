@@ -9,6 +9,12 @@ class TextType(Enum):
     LINK = "link"
     IMAGE = "image"
 
+class TextDelimiter(Enum):
+    BOLD = ["**", "__"]
+    ITALIC = ["*", "_"]
+    CODE = ["```", "``", "`"]
+
+
 class TextNode:
     def __init__(self, text, text_type, url=None):
         self.text = text
@@ -36,3 +42,5 @@ def text_node_to_html_node(text_node):
         return LeafNode("a", text_node.text, {"href": text_node.url} if text_node.url else None)
     elif text_node.text_type == TextType.IMAGE:
         return LeafNode("img", None, {"src": text_node.url, "alt": text_node.text})
+    
+        
