@@ -12,7 +12,7 @@ class TextType(Enum):
 class TextDelimiter(Enum):
     BOLD = ["**", "__"]
     ITALIC = ["*", "_"]
-    CODE = ["```", "``", "`"]
+    CODE = ["``", "`"]
 
 
 class TextNode:
