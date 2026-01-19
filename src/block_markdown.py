@@ -1,4 +1,7 @@
 from enum import Enum
+from htmlnode import HTMLNode
+from textnode import TextNode, TextType, text_node_to_html_node
+from inline_markdown import text_to_textnodes
 
 class BlockType (Enum): 
     PARAGRAPH = "paragraph"
@@ -19,6 +22,28 @@ def markdown_to_blocks(markdown):
     blocks = markdown.split("\n\n")
     cleaned_blocks = [block.strip() for block in blocks if block.strip() != ""]
     return cleaned_blocks   
+
+def markodown_to_html_node(markdown):
+    blocks = markdown_to_blocks(markdown)
+    htmlNode = HTMLNode("div", None, [])
+    subHtmlNodes = []
+
+    for block in blocks:
+        block_type = block_to_block_type(block)
+        match block_type:
+            case BlockType.PARAGRAPH:
+                textNodes = text_to_textnodes(block)
+                subHtmlNodes = [text_node_to_html_node(tn) for tn in textNodes]
+                htmlNode.children.append(HTMLNode("p", block, []))
+            case BlockType.HEADER:
+                htmlNode.children.append(HTMLNode("h1", block, [markodown_to_html_node(block)]))
+            case BlockType.UNORDERED_LIST:
+                htmlNode.children.append(HTMLNode("", block, [markodown_to_html_node(block)]))
+            case BlockType.ORDERED_LIST:
+                htmlNode.children.append(HTMLNode("", block, [markodown_to_html_node(block )]))
+
+
+    return html_nodes
 
 def block_to_block_type(block):
     lines = block.split("\n")
