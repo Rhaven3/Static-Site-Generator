@@ -1,5 +1,5 @@
 from enum import Enum
-from htmlnode import HTMLNode
+from htmlnode import ParentNode, LeafNode
 from textnode import TextNode, TextType, text_node_to_html_node
 from inline_markdown import text_to_textnodes
 
@@ -20,30 +20,37 @@ class BlockDelimiter:
 
 def markdown_to_blocks(markdown):
     blocks = markdown.split("\n\n")
-    cleaned_blocks = [block.strip() for block in blocks if block.strip() != ""]
-    return cleaned_blocks   
+    filtered_blocks = []
+    for block in blocks:
+        if block == "":
+            continue
+        block = block.strip()
+        filtered_blocks.append(block)
+    return filtered_blocks
 
-def markodown_to_html_node(markdown):
+def markdown_to_html_node(markdown):
     blocks = markdown_to_blocks(markdown)
-    htmlNode = HTMLNode("div", None, [])
+    body = ParentNode("div", [])
     subHtmlNodes = []
 
     for block in blocks:
         block_type = block_to_block_type(block)
         match block_type:
             case BlockType.PARAGRAPH:
+                print("BLOCK: ", block)
                 textNodes = text_to_textnodes(block)
+                print("TEXTNODES: ", textNodes)
                 subHtmlNodes = [text_node_to_html_node(tn) for tn in textNodes]
-                htmlNode.children.append(HTMLNode("p", block, []))
-            case BlockType.HEADER:
-                htmlNode.children.append(HTMLNode("h1", block, [markodown_to_html_node(block)]))
-            case BlockType.UNORDERED_LIST:
-                htmlNode.children.append(HTMLNode("", block, [markodown_to_html_node(block)]))
-            case BlockType.ORDERED_LIST:
-                htmlNode.children.append(HTMLNode("", block, [markodown_to_html_node(block )]))
+                print("HTMLNODES: ", subHtmlNodes)
+            # case BlockType.HEADER:
+            #     htmlNode.children.append(HTMLNode("h1", block, [markodown_to_html_node(block)]))
+            # case BlockType.UNORDERED_LIST:
+            #     htmlNode.children.append(HTMLNode("", block, [markodown_to_html_node(block)]))
+            # case BlockType.ORDERED_LIST:
+            #     htmlNode.children.append(HTMLNode("", block, [markodown_to_html_node(block )]))
 
 
-    return html_nodes
+    return htmlNode
 
 def block_to_block_type(block):
     lines = block.split("\n")

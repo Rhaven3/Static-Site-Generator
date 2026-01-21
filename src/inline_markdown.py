@@ -1,46 +1,38 @@
 import re
-from textnode import TextType, TextNode, TextDelimiter
+
+from textnode import TextNode, TextType
 
 
 def text_to_textnodes(text):
-    old_node = [TextNode(text, TextType.TEXT)]
-    new_nodes = []
-    
-    delimiters = []
+    nodes = [TextNode(text, TextType.TEXT)]
+    nodes = split_nodes_delimiter(nodes, "**", TextType.BOLD)
+    nodes = split_nodes_delimiter(nodes, "_", TextType.ITALIC)
+    nodes = split_nodes_delimiter(nodes, "`", TextType.CODE)
+    nodes = split_nodes_image(nodes)
+    nodes = split_nodes_link(nodes)
+    return nodes
 
-    for delim in TextDelimiter:
-        delimiters.extend(delim.value)
-
-    for delimiter in delimiters:
-        new_nodes = split_nodes_delimiter(old_node, delimiter, TextType.TEXT)
-        old_node = new_nodes
-        
-    new_nodes = split_nodes_image(old_node)
-    old_node = new_nodes
-    new_nodes = split_nodes_link(old_node)
-    return new_nodes
 
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes = []
-    for node in old_nodes:
-        # Only process nodes of the specified text_type
-        if node.text_type != text_type:
-            new_nodes.append(node)
+    for old_node in old_nodes:
+        if old_node.text_type != TextType.TEXT:
+            new_nodes.append(old_node)
             continue
-
-        parts = node.text.split(delimiter)
-        for i, part in enumerate(parts):
-            if not part:
-                raise Exception("Empty text node found")
-            if i != 1:  # not the delimiter part
-                new_nodes.append(type(node)(part, TextType.TEXT, node.url))
+        split_nodes = []
+        sections = old_node.text.split(delimiter)
+        if len(sections) % 2 == 0:
+            raise ValueError("invalid markdown, formatted section not closed")
+        for i in range(len(sections)):
+            if sections[i] == "":
                 continue
-
-            for textDelimiter in TextDelimiter:
-                if delimiter in textDelimiter.value:
-                    name = textDelimiter.name
-                    new_nodes.append(type(node)(part, TextType[name], node.url))
+            if i % 2 == 0:
+                split_nodes.append(TextNode(sections[i], TextType.TEXT))
+            else:
+                split_nodes.append(TextNode(sections[i], text_type))
+        new_nodes.extend(split_nodes)
     return new_nodes
+
 
 def split_nodes_image(old_nodes):
     new_nodes = []
@@ -95,11 +87,14 @@ def split_nodes_link(old_nodes):
             new_nodes.append(TextNode(original_text, TextType.TEXT))
     return new_nodes
 
-def extract_markdown_images(text):
-    matches = re.findall(r"!\[([^\]]+)\]\(([^\)]+)", text)
 
+def extract_markdown_images(text):
+    pattern = r"!\[([^\[\]]*)\]\(([^\(\)]*)\)"
+    matches = re.findall(pattern, text)
     return matches
 
+
 def extract_markdown_links(text):
-    matches = re.findall(r"\[([^\]]+)\]\(([^\)]+)", text)
+    pattern = r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)"
+    matches = re.findall(pattern, text)
     return matches

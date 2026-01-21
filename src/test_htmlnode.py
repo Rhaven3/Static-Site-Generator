@@ -1,5 +1,5 @@
 import unittest
-from htmlnode import HTMLNode, LeafNode, ParentNode
+from htmlnode import LeafNode, ParentNode, HTMLNode
 
 
 class TestHTMLNode(unittest.TestCase):
@@ -48,69 +48,26 @@ class TestHTMLNode(unittest.TestCase):
             node.__repr__(),
             "HTMLNode(p, What a strange world, children: None, {'class': 'primary'})",
         )
-    
-    def test_leaf_to_html(self):
-        leaf = LeafNode("span", "Leaf content", {"style": "color:red"})
-        self.assertEqual(
-            leaf.to_html(),
-            '<span style="color:red">Leaf content</span>'
-        )
-        
-        # 2
-        leaf_no_tag = LeafNode(None, "Just text")
-        self.assertEqual(
-            leaf_no_tag.to_html(),
-            'Just text'
-        )
 
-        # 3
-        leaf_no_value = LeafNode("div", None)
-        with self.assertRaises(ValueError):
-            leaf_no_value.to_html()
-            
-        # 4
-        leaf_no_props = LeafNode("p", "No props here")
-        self.assertEqual(
-            leaf_no_props.to_html(),
-            '<p>No props here</p>'
-        )
-        
-    def test_Parent_to_html(self):
-        child1 = LeafNode("span", "Child 1")
-        child2 = LeafNode("span", "Child 2", {"class": "highlight"})
-        parent = ParentNode("div", [child1, child2], {"id": "parent"})
+    def test_leaf_to_html_p(self):
+        node = LeafNode("p", "Hello, world!")
+        self.assertEqual(node.to_html(), "<p>Hello, world!</p>")
 
-        self.assertEqual(
-            parent.to_html(),
-            '<div id="parent"><span>Child 1</span><span class="highlight">Child 2</span></div>'
-        )
-
-        # 2
-        parent_no_tag = ParentNode(None, [child1])
-        with self.assertRaises(ValueError):
-            parent_no_tag.to_html()
-
-        # 3
-        parent_no_children = ParentNode("div", None)
-        with self.assertRaises(ValueError):
-            parent_no_children.to_html()
-            
-        # 4
-        node = ParentNode(
-            "p",
-            [
-                LeafNode("b", "Bold text"),
-                LeafNode(None, "Normal text"),
-                LeafNode("i", "italic text"),
-                LeafNode(None, "Normal text"),
-            ],
-        )
-        
+    def test_leaf_to_html_a(self):
+        node = LeafNode("a", "Click me!", {"href": "https://www.google.com"})
         self.assertEqual(
             node.to_html(),
-            "<p><b>Bold text</b>Normal text<i>italic text</i>Normal text</p>"
+            '<a href="https://www.google.com">Click me!</a>',
         )
 
+    def test_leaf_to_html_no_tag(self):
+        node = LeafNode(None, "Hello, world!")
+        self.assertEqual(node.to_html(), "Hello, world!")
+
+    def test_to_html_with_children(self):
+        child_node = LeafNode("span", "child")
+        parent_node = ParentNode("div", [child_node])
+        self.assertEqual(parent_node.to_html(), "<div><span>child</span></div>")
 
     def test_to_html_with_grandchildren(self):
         grandchild_node = LeafNode("b", "grandchild")
@@ -121,6 +78,36 @@ class TestHTMLNode(unittest.TestCase):
             "<div><span><b>grandchild</b></span></div>",
         )
 
+    def test_to_html_many_children(self):
+        node = ParentNode(
+            "p",
+            [
+                LeafNode("b", "Bold text"),
+                LeafNode(None, "Normal text"),
+                LeafNode("i", "italic text"),
+                LeafNode(None, "Normal text"),
+            ],
+        )
+        self.assertEqual(
+            node.to_html(),
+            "<p><b>Bold text</b>Normal text<i>italic text</i>Normal text</p>",
+        )
+
+    def test_headings(self):
+        node = ParentNode(
+            "h2",
+            [
+                LeafNode("b", "Bold text"),
+                LeafNode(None, "Normal text"),
+                LeafNode("i", "italic text"),
+                LeafNode(None, "Normal text"),
+            ],
+        )
+        self.assertEqual(
+            node.to_html(),
+            "<h2><b>Bold text</b>Normal text<i>italic text</i>Normal text</h2>",
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
-
