@@ -37,11 +37,12 @@ def markdown_to_html_node(markdown):
         block_type = block_to_block_type(block)
         match block_type:
             case BlockType.PARAGRAPH:
-                print("BLOCK: ", block)
+                pParentNode = ParentNode("p", [], None)
                 textNodes = text_to_textnodes(block)
-                print("TEXTNODES: ", textNodes)
                 subHtmlNodes = [text_node_to_html_node(tn) for tn in textNodes]
                 print("HTMLNODES: ", subHtmlNodes)
+                pParentNode.children.append(subHtmlNodes)
+                body.children.append(pParentNode)
             # case BlockType.HEADER:
             #     htmlNode.children.append(HTMLNode("h1", block, [markodown_to_html_node(block)]))
             # case BlockType.UNORDERED_LIST:
@@ -50,7 +51,7 @@ def markdown_to_html_node(markdown):
             #     htmlNode.children.append(HTMLNode("", block, [markodown_to_html_node(block )]))
 
 
-    return htmlNode
+    return body
 
 def block_to_block_type(block):
     lines = block.split("\n")
