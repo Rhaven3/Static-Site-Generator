@@ -5,18 +5,18 @@ from inline_markdown import text_to_textnodes
 
 class BlockType (Enum): 
     PARAGRAPH = "paragraph"
-    HEADER = "header"
+    HEADING = "header"
     UNORDERED_LIST = "unordered_list"
     ORDERED_LIST = "ordered_list"
     CODE_BLOCK = "code_block"
     BLOCKQUOTE = "blockquote"
 
 class BlockDelimiter:
-    HEADER = ["#", "##", "###", "####", "#####", "######"]
+    HEADING = ["#", "##", "###", "####", "#####", "######"]
     UNORDERED_LIST = ["- ", "* ", "+ "]
-    ORDERED_LIST = ["1. "]
-    CODE_BLOCK = ["```"]
-    BLOCKQUOTE = ["> "]
+    ORDERED_LIST = "1. "
+    CODE_BLOCK = "```"
+    BLOCKQUOTE = "> "
 
 def markdown_to_blocks(markdown):
     blocks = markdown.split("\n\n")
@@ -36,25 +36,50 @@ def markdown_to_html_node(markdown):
     for block in blocks:
         block_type = block_to_block_type(block)
         match block_type:
+            case BlockType.CODE_BLOCK:
+                cParentNode = ParentNode("pre", [ParentNode("code", [LeafNode(None, block.split(BlockDelimiter.CODE_BLOCK)[1][1:])])])
+                body.children.append(cParentNode)
+
             case BlockType.PARAGRAPH:
                 pParentNode = ParentNode("p", [], None)
                 textNodes = text_to_textnodes(block)
                 subHtmlNodes = [text_node_to_html_node(tn) for tn in textNodes]
-                print("HTMLNODES: ", subHtmlNodes)
-                pParentNode.children.append(subHtmlNodes)
+                for child in subHtmlNodes:
+                    child.value = child.value.replace("\n", " ")
+                pParentNode.children.extend(subHtmlNodes)
                 body.children.append(pParentNode)
+
             # case BlockType.HEADER:
-            #     htmlNode.children.append(HTMLNode("h1", block, [markodown_to_html_node(block)]))
+            #     body.children.append()
             # case BlockType.UNORDERED_LIST:
-            #     htmlNode.children.append(HTMLNode("", block, [markodown_to_html_node(block)]))
+            #     body.children.append()
             # case BlockType.ORDERED_LIST:
-            #     htmlNode.children.append(HTMLNode("", block, [markodown_to_html_node(block )]))
+            #     body.children.append()
 
 
     return body
 
 def block_to_block_type(block):
     lines = block.split("\n")
+
+    if block.startswith(tuple(BlockDelimiter.HEADING)):
+        return BlockType.HEADING
+
+    if len(lines) > 1 and lines[0].startswith(tuple(BlockDelimiter.CODE_BLOCK)) and lines[-1].startswith(tuple(BlockDelimiter.CODE_BLOCK)):
+        
+        return BlockType.CODE_BLOCK
+    
+    if block.startswith(tuple(BlockDelimiter.BLOCKQUOTE)):
+        for line in lines:
+            if not line.startswith(tuple(BlockDelimiter.BLOCKQUOTE)):
+                return BlockType.PARAGRAPH
+        return BlockType.BLOCKQUOTE
+    
+    if block.startswith(BlockDelimiter.UNORDERED_LIST[0]):
+        for line in lines:
+            if not line.startswith(BlockDelimiter.UNORDERED_LIST[0]):
+                return BlockType.PARAGRAPH
+        return BlockType.UNORDERED_LIST
 
     if block.startswith(BlockDelimiter.ORDERED_LIST[0]):
         i = 1
@@ -63,23 +88,4 @@ def block_to_block_type(block):
                 return BlockType.PARAGRAPH
             i += 1
         return BlockType.ORDERED_LIST
-
-    if block.startswith(tuple(BlockDelimiter.HEADER)):
-        return BlockType.HEADER
-
-    if len(lines) > 1 and lines[0].startswith(tuple(BlockDelimiter.CODE_BLOCK)) and lines[-1].startswith(tuple(BlockDelimiter.CODE_BLOCK)):
-        return BlockType.CODE_BLOCK
-
-    if block.startswith(tuple(BlockDelimiter.BLOCKQUOTE)):
-        for line in lines:
-            if not line.startswith(tuple(BlockDelimiter.BLOCKQUOTE)):
-                return BlockType.PARAGRAPH
-        return BlockType.BLOCKQUOTE
-
-    if block.startswith(BlockDelimiter.UNORDERED_LIST[0]):
-        for line in lines:
-            if not line.startswith(BlockDelimiter.UNORDERED_LIST[0]):
-                return BlockType.PARAGRAPH
-        return BlockType.UNORDERED_LIST
-    
     return BlockType.PARAGRAPH

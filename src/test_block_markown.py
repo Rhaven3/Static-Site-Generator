@@ -24,7 +24,7 @@ This is the same paragraph on a new line
         
     def test_block_to_block_types(self):
         block = "# heading"
-        self.assertEqual(bm.block_to_block_type(block), bm.BlockType.HEADER)
+        self.assertEqual(bm.block_to_block_type(block), bm.BlockType.HEADING)
         block = "```\ncode\n```"
         self.assertEqual(bm.block_to_block_type(block), bm.BlockType.CODE_BLOCK)
         block = "> quote\n> more quote"
@@ -38,12 +38,11 @@ This is the same paragraph on a new line
 
     def test_paragraphs(self):
         md = """
-    This is **bolded** paragraph
-    text in a p
-    tag here
+This is **bolded** paragraph
+text in a p
+tag here
 
-    This is another paragraph with _italic_ text and `code` here
-
+This is another paragraph with _italic_ text and `code` here
     """
 
         node = bm.markdown_to_html_node(md)
@@ -55,10 +54,10 @@ This is the same paragraph on a new line
 
     def test_codeblock(self):
         md = """
-    ```
-    This is text that _should_ remain
-    the **same** even with inline stuff
-    ```
+```
+This is text that _should_ remain
+the **same** even with inline stuff
+```
     """
 
         node = bm.markdown_to_html_node(md)
