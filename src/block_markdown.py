@@ -41,7 +41,7 @@ def markdown_to_html_node(markdown):
                 body.children.append(cParentNode)
 
             case BlockType.PARAGRAPH:
-                pParentNode = ParentNode("p", [], None)
+                pParentNode = ParentNode("p", [])
                 textNodes = text_to_textnodes(block)
                 subHtmlNodes = [text_node_to_html_node(tn) for tn in textNodes]
                 for child in subHtmlNodes:
@@ -49,8 +49,40 @@ def markdown_to_html_node(markdown):
                 pParentNode.children.extend(subHtmlNodes)
                 body.children.append(pParentNode)
 
-            # case BlockType.HEADER:
-            #     body.children.append()
+            case BlockType.BLOCKQUOTE:
+                qParentNode = ParentNode("blockquote", [])
+                textNodes = text_to_textnodes(block)
+                subHtmlNodes = [text_node_to_html_node(tn) for tn in textNodes]
+                for child in subHtmlNodes:
+                    child.value = child.value.replace("> ", "")
+                qParentNode.children.extend(subHtmlNodes)
+                body.children.append(qParentNode)
+
+            case BlockType.HEADING:
+                textNodes = text_to_textnodes(block)
+                subHtmlNodes = [text_node_to_html_node(tn) for tn in textNodes]
+                headNumber = 1;
+                for child in subHtmlNodes:
+                    if BlockDelimiter.HEADING[5] in child.value:
+                        headNumber = 6
+                        child.value = child.value.replace(BlockDelimiter.HEADING[5]+" ", "")
+                    elif BlockDelimiter.HEADING[4] in child.value:
+                        headNumber = 5
+                        child.value = child.value.replace(BlockDelimiter.HEADING[4]+" ", "")
+                    elif BlockDelimiter.HEADING[3] in child.value:
+                        headNumber = 4
+                        child.value = child.value.replace(BlockDelimiter.HEADING[3]+" ", "")
+                    elif BlockDelimiter.HEADING[2] in child.value:
+                        headNumber = 3
+                        child.value = child.value.replace(BlockDelimiter.HEADING[2]+" ", "")
+                    elif BlockDelimiter.HEADING[1] in child.value:
+                        headNumber = 2
+                        child.value = child.value.replace(BlockDelimiter.HEADING[1]+" ", "")
+                    else:
+                        child.value = child.value.replace(BlockDelimiter.HEADING[0]+" ", "")
+                hParentNode = ParentNode(f"h{headNumber}", [])
+                hParentNode.children.extend(subHtmlNodes)
+                body.children.append(hParentNode)
             # case BlockType.UNORDERED_LIST:
             #     body.children.append()
             # case BlockType.ORDERED_LIST:

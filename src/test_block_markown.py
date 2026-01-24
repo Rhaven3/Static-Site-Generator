@@ -66,6 +66,44 @@ the **same** even with inline stuff
             html,
             "<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>",
         )
+    
+    def test_blockquote(self):
+        md = """
+> Je suis cerise !! la **GROSSE** fée ![belle fée](https://laGrosseFee.png)
+> j'aime la fée
+
+> et ça c'est un autre testblock
+"""
+
+        node = bm.markdown_to_html_node(md)
+        html = node.to_html()
+        self.maxDiff = None
+        self.assertEqual(
+            html,
+            "<div><blockquote>Je suis cerise !! la <b>GROSSE</b> fée <img src=\"https://laGrosseFee.png\" alt=\"belle fée\"></img>\nj'aime la fée</blockquote><blockquote>et ça c'est un autre testblock</blockquote></div>"
+        )
+    
+    def test_heading(self):
+        md = """
+# big h1
+
+## **ptit** h2
+
+### _grand_ h3
+
+##### h5 ça mère la pute il est long celui là dis donc
+
+#### h4
+
+###### eheh 6
+"""
+        node = bm.markdown_to_html_node(md)
+        html = node.to_html()
+        self.maxDiff = None
+        self.assertEqual(
+            html,
+            "<div><h1>big h1</h1><h2><b>ptit</b> h2</h2><h3><i>grand</i> h3</h3><h5>h5 ça mère la pute il est long celui là dis donc</h5><h4>h4</h4><h6>eheh 6</h6></div>"
+        )
 
 if __name__ == "__main__":
     unittest.main()
