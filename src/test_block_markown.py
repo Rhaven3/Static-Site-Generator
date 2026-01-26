@@ -105,5 +105,41 @@ the **same** even with inline stuff
             "<div><h1>big h1</h1><h2><b>ptit</b> h2</h2><h3><i>grand</i> h3</h3><h5>h5 ça mère la pute il est long celui là dis donc</h5><h4>h4</h4><h6>eheh 6</h6></div>"
         )
 
+    def test_unorderedList(self):
+        md = """
+- Chocolat
+- _Fraise_ banane
+- Cerise
+
+- 2eme ul
+- tarte
+- pastèque
+- **framboise**
+"""
+        node = bm.markdown_to_html_node(md)
+        html = node.to_html()
+        self.maxDiff = None
+        self.assertEqual(
+            html,
+            "<div><ul><li>Chocolat</li><li><i>Fraise</i> banane</li><li>Cerise</li></ul><ul><li>2eme ul</li><li>tarte</li><li>pastèque</li><li><b>framboise</b></li></ul></div>"
+        )
+    
+    def test_orderedList(self):
+        md = """
+1. chocolatine
+2. titus **mordecus** plasphemus
+3. Mordekeinen 3eme du [nom](https://www.Wikidot.fr/mordekeinen)
+
+1. 2eme ol
+2. tartiflete
+"""
+        node = bm.markdown_to_html_node(md)
+        html = node.to_html()
+        self.maxDiff = None
+        self.assertEqual(
+            html,
+            "<div><ol><li>chocolatine</li><li>titus <b>mordecus</b> plasphemus</li><li>Mordekeinen 3eme du <a href=\"https://www.Wikidot.fr/mordekeinen\">nom</a></li></ol><ol><li>2eme ol</li><li>tartiflete</li></ol></div>"
+        )
+
 if __name__ == "__main__":
     unittest.main()
