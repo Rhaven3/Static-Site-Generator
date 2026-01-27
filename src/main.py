@@ -1,6 +1,7 @@
 # from textnode import *
 from shutil import rmtree, copy
 from os import listdir, path, mkdir
+from block_markdown import markdown_to_html_node, extract_title
 
 def copyDir(src, dest):
     if not path.exists(src):
@@ -26,11 +27,30 @@ def copyDir(src, dest):
             # copy file of the old dir
             copyDir(oldDir, newDir)
 
+def generate_page(from_path, template_path, dest_path):
+    print(f"Generating page from {from_path} to {dest_path} using template {template_path}")
+    with open(from_path, "r") as from_file:
+        content = from_file.read()
+    with open(template_path, "r") as template_file:
+        template = template_file.read()
+
+    html_content = markdown_to_html_node(content).to_html()
+    title = extract_title(from_path)
+
+    # Replace placeholders in the template
+    final_html = template.replace("{{ Content }}", html_content)
+    final_html = final_html.replace("{{ Title }}", title)
+
+    with open(dest_path, "w") as dest_file:
+        dest_file.write(final_html)
+
 def main():
-    # node = TextNode("This is some anchor text", TextType.LINK, "https://www.boot.dev")
-    print("hello world")
+    src_dir = "./content"
+    template_path = "./template.html"
+    dest_dir = "./public"
+
     copyDir("./static", "./public")
-    # print(node)
+    generate_page(src_dir + "/index.md", template_path, dest_dir + "/index.html")
 main()
 
 

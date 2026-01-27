@@ -18,6 +18,14 @@ class BlockDelimiter:
     CODE_BLOCK = "```"
     BLOCKQUOTE = "> "
 
+def extract_title(markdown_file):
+    with open(markdown_file, "r") as f:
+        firstLine = f.readlines()[0]
+        if not firstLine.startswith(BlockDelimiter.HEADING[0]):
+            raise Exception("No title found in markdown file")
+    return firstLine.replace("# ", "").strip()
+
+
 def markdown_to_blocks(markdown):
     blocks = markdown.split("\n\n")
     filtered_blocks = []

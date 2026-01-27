@@ -2,6 +2,23 @@ import unittest
 import block_markdown as bm
 
 class TestBlockMarkdown(unittest.TestCase):
+    def test_extract_title(self):
+        import tempfile
+
+        with tempfile.NamedTemporaryFile(mode="w+", delete=True) as tmp:
+            tmp.write("# This is the title\n\nSome content here.")
+            tmp.flush()
+            title = bm.extract_title(tmp.name)
+            self.assertEqual(title, "This is the title")
+
+    def test_extract_title2(self):
+        import tempfile
+        with tempfile.NamedTemporaryFile(mode="w+", delete=True) as tmp:
+            tmp.write("This is the title\n\nSome content here.")
+            tmp.flush()
+            self.assertRaises(Exception, bm.extract_title, tmp.name)
+
+
     def test_markdown_to_blocks(self):
         md = """
 This is **bolded** paragraph
