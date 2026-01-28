@@ -1,6 +1,7 @@
 # from textnode import *
 from shutil import rmtree, copy
-from os import listdir, path, mkdir
+from os import listdir, path, mkdir, fsencode
+from sys import argv
 from block_markdown import markdown_to_html_node, extract_title
 
 def copyDir(src, dest):
@@ -60,7 +61,7 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
 
         if path.isfile(oldDir):
             if dir.endswith(".md"):
-                generate_page(oldDir, template_path, newDir)
+                generate_page(oldDir, template_path, newDir.replace(".md", ".html"))
         else:
             # create new dir
             mkdir(newDir)
@@ -68,12 +69,16 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
             generate_pages_recursive(oldDir, template_path, newDir)
 
 def main():
+    basePath = "/"
+    if argv[1]:
+        basePath = argv[1]
+
     src_dir = "./content"
     template_path = "./template.html"
     dest_dir = "./public"
 
     copyDir("./static", "./public")
-    generate_page(src_dir + "/index.md", template_path, dest_dir + "/index.html")
+    generate_pages_recursive(src_dir, template_path, dest_dir)
 main()
 
 
