@@ -12,7 +12,6 @@ def copyDir(src, dest):
         # clean destination
         rmtree(dest)
         mkdir(dest)
-
     nestedDir = listdir(src)
     for dir in nestedDir:
         oldDir = path.join(src, dir)
@@ -43,6 +42,30 @@ def generate_page(from_path, template_path, dest_path):
 
     with open(dest_path, "w") as dest_file:
         dest_file.write(final_html)
+
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    if not path.exists(dir_path_content):
+        return
+    if not path.exists(dest_dir_path):
+        mkdir(dest_dir_path)
+    else:
+        # clean destination
+        rmtree(dest_dir_path)
+        mkdir(dest_dir_path)
+
+    nestedDir = listdir(dir_path_content)
+    for dir in nestedDir:
+        oldDir = path.join(dir_path_content, dir)
+        newDir = path.join(dest_dir_path, dir)
+
+        if path.isfile(oldDir):
+            if dir.endswith(".md"):
+                generate_page(oldDir, template_path, newDir)
+        else:
+            # create new dir
+            mkdir(newDir)
+            # generate page under the new dir
+            generate_pages_recursive(oldDir, template_path, newDir)
 
 def main():
     src_dir = "./content"
