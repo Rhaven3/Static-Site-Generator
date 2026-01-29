@@ -1,11 +1,13 @@
 # from textnode import *
 from shutil import rmtree, copy
-from os import listdir, path, mkdir, fsencode
+from os import listdir, path, mkdir
 from sys import argv
 from block_markdown import markdown_to_html_node, extract_title
 
 def copyDir(src, dest):
+    print("copy of ", src, " in ", dest)
     if not path.exists(src):
+        print("nexiste pas")
         return
     if not path.exists(dest):
         mkdir(dest)
@@ -13,12 +15,14 @@ def copyDir(src, dest):
         # clean destination
         rmtree(dest)
         mkdir(dest)
+    
     nestedDir = listdir(src)
     for dir in nestedDir:
         oldDir = path.join(src, dir)
         newDir = path.join(dest, dir)
 
         if path.isfile(oldDir):
+            print("copy ", oldDir)
             # copy a file in new dir
             copy(oldDir, newDir)
         else:
@@ -52,10 +56,6 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, bas
         return
     if not path.exists(dest_dir_path):
         mkdir(dest_dir_path)
-    else:
-        # clean destination
-        rmtree(dest_dir_path)
-        mkdir(dest_dir_path)
     
     # if basePath:
     #     print(basePath)
@@ -84,7 +84,7 @@ def main():
 
     src_dir = "./content"
     template_path = "./template.html"
-    dest_dir = "docs"
+    dest_dir = "./docs"
 
     copyDir("./static", dest_dir)
     generate_pages_recursive(src_dir, template_path, dest_dir, basePath)
