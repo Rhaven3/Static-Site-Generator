@@ -8,14 +8,14 @@ A lightweight static site generator built in Python as part of my Boot.dev train
 
 ---
 
-## Features
+## ✨ Features
 
 - **Markdown to HTML:** Convert `.md` files to static HTML pages.
 - **Unit Tested:** Comprehensive test suite for core functionality.
 
 ---
 
-## Learning Outcomes
+## 🎓 Learning Outcomes
 
 - **Unit Testing:** Wrote and maintained tests for all critical components.
 - **Project Structure:** Organized a complex project with clear separation of concerns.
@@ -24,7 +24,7 @@ A lightweight static site generator built in Python as part of my Boot.dev train
 
 ---
 
-## Deploy on Github Pages
+## 🚀 Deploy on Github Pages
 
 1. Create a Github Repositories (not very optional)
 2. Create some Markdown content in ``/content``
@@ -44,7 +44,7 @@ python3 src/main.py "/REPO_NAME/"
 
 6. Open the live URL (https://USERNAME.github.io/REPO_NAME/) in your browser and ensure that the site is live and working correctly. You can check the status and find the exact URL in the GitHub Pages section of your repository settings.
 
-## Testing and Local Deploy (only available in Unix)
+## 🧪 Testing and Local Deploy (only available in Unix)
 
 Test with unit test in ``test_*.py`` file
 ```bash
@@ -58,3 +58,4 @@ Local deploy in ``/public``
 
 
   
+
