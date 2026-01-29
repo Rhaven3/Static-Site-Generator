@@ -22,3 +22,39 @@ A lightweight static site generator built in Python as part of my Boot.dev train
 - **Python Skills:** Applied OOP, file I/O.
 
 
+---
+
+## Deploy on Github Pages
+
+1. Create a Github Repositories (not very optional)
+2. Create some Markdown content in ``/content``
+   - if you want some CSS style in ``/static/css``
+   - and for the image in  ``/static/images``
+
+3.  launch in terminal to generate your website
+   ```bash
+python3 src/main.py "/REPO_NAME/"
+```
+
+4. Open your repository's settings on GitHub and select Pages in the Code and automation section to config the publishing source.
+   - Set the source to the main branch and the docs directory.
+   - Save the settings.
+   - (Now the /docs directory on your main branch will auto deploy to your GitHub Pages URL once something is in it.)
+5. Commit and push your changes to GitHub
+
+6. Open the live URL (https://USERNAME.github.io/REPO_NAME/) in your browser and ensure that the site is live and working correctly. You can check the status and find the exact URL in the GitHub Pages section of your repository settings.
+
+## Testing and Local Deploy (only available in Unix)
+
+Test with unit test in ``test_*.py`` file
+```bash
+./test.sh
+```
+
+Local deploy in ``/public``
+```bash
+./main.sh
+```
+
+
+  
