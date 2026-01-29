@@ -27,7 +27,7 @@ def copyDir(src, dest):
             # copy file of the old dir
             copyDir(oldDir, newDir)
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basePath):
     print(f"Generating page from {from_path} to {dest_path} using template {template_path}")
     with open(from_path, "r") as from_file:
         content = from_file.read()
@@ -40,11 +40,14 @@ def generate_page(from_path, template_path, dest_path):
     # Replace placeholders in the template
     final_html = template.replace("{{ Content }}", html_content)
     final_html = final_html.replace("{{ Title }}", title)
+    if basePath:
+        final_html = final_html.replace("href=\"/", f"href=\"{basePath}")
+        final_html = final_html.replace("src=\"/", f"src=\"{basePath}")
 
     with open(dest_path, "w") as dest_file:
         dest_file.write(final_html)
 
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, basePath = None):
     if not path.exists(dir_path_content):
         return
     if not path.exists(dest_dir_path):
@@ -53,6 +56,12 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
         # clean destination
         rmtree(dest_dir_path)
         mkdir(dest_dir_path)
+    
+    if basePath:
+        print(basePath)
+        dest_dir_path = path.join(dest_dir_path, basePath)
+        mkdir(dest_dir_path)
+        print("joined: ", dest_dir_path)
 
     nestedDir = listdir(dir_path_content)
     for dir in nestedDir:
@@ -61,7 +70,7 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
 
         if path.isfile(oldDir):
             if dir.endswith(".md"):
-                generate_page(oldDir, template_path, newDir.replace(".md", ".html"))
+                generate_page(oldDir, template_path, newDir.replace(".md", ".html"), basePath)
         else:
             # create new dir
             mkdir(newDir)
@@ -75,10 +84,10 @@ def main():
 
     src_dir = "./content"
     template_path = "./template.html"
-    dest_dir = "./public"
+    dest_dir = "./docs"
 
-    copyDir("./static", "./public")
-    generate_pages_recursive(src_dir, template_path, dest_dir)
+    copyDir("./static", dest_dir)
+    generate_pages_recursive(src_dir, template_path, dest_dir, basePath)
 main()
 
 
