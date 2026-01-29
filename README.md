@@ -2,7 +2,7 @@
 
 A lightweight static site generator built in Python as part of my Boot.dev training. This project allowed me to practice unit testing, implement a complex project from scratch, and solidify my understanding of Python.
 
-**Live Demo:** [GitHub Pages](YOUR_GITHUB_PAGES_URL)
+**Live Demo:** [GitHub Pages](https://rhaven3.github.io/Static-Site-Generator/)
 
 ---
 
@@ -18,3 +18,4 @@ A lightweight static site generator built in Python as part of my Boot.dev train
 - **Unit Testing:** Wrote and maintained tests for all critical components.
 - **Project Structure:** Organized a complex project with clear separation of concerns.
 - **Python Skills:** Applied OOP, file I/O.
+
