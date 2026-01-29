@@ -57,11 +57,11 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, bas
         rmtree(dest_dir_path)
         mkdir(dest_dir_path)
     
-    if basePath:
-        print(basePath)
-        dest_dir_path = path.join(dest_dir_path, basePath)
-        mkdir(dest_dir_path)
-        print("joined: ", dest_dir_path)
+    # if basePath:
+    #     print(basePath)
+    #     dest_dir_path = path.join(dest_dir_path, basePath)
+    #     mkdir(dest_dir_path)
+    #     print("joined: ", dest_dir_path)
 
     nestedDir = listdir(dir_path_content)
     for dir in nestedDir:
@@ -84,7 +84,7 @@ def main():
 
     src_dir = "./content"
     template_path = "./template.html"
-    dest_dir = "./docs"
+    dest_dir = "docs"
 
     copyDir("./static", dest_dir)
     generate_pages_recursive(src_dir, template_path, dest_dir, basePath)
