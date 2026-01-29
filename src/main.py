@@ -56,12 +56,6 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, bas
         return
     if not path.exists(dest_dir_path):
         mkdir(dest_dir_path)
-    
-    # if basePath:
-    #     print(basePath)
-    #     dest_dir_path = path.join(dest_dir_path, basePath)
-    #     mkdir(dest_dir_path)
-    #     print("joined: ", dest_dir_path)
 
     nestedDir = listdir(dir_path_content)
     for dir in nestedDir:
@@ -75,7 +69,7 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, bas
             # create new dir
             mkdir(newDir)
             # generate page under the new dir
-            generate_pages_recursive(oldDir, template_path, newDir)
+            generate_pages_recursive(oldDir, template_path, newDir, basePath)
 
 def main():
     basePath = "/"
