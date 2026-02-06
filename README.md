@@ -2,6 +2,8 @@
 
 A lightweight static site generator built in Python as part of my Boot.dev training. This project allowed me to practice unit testing, implement a complex project from scratch, and solidify my understanding of Python.
 
+![SSG_final](https://github.com/user-attachments/assets/c9f5d532-9691-45d9-b354-864dd4858860)
+
 **Live Demo:** [GitHub Pages](https://rhaven3.github.io/Static-Site-Generator/)
 
 **Markdown Sources:** [Markdown Files](https://github.com/Rhaven3/Static-Site-Generator/tree/main/content)
@@ -58,4 +60,5 @@ Local deploy in ``/public``
 
 
   
+
 
